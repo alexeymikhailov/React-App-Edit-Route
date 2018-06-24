@@ -81,14 +81,8 @@ class App extends Component {
       });
     };
 
-    this.getCurrentUrl=(currentLocation) => {
-      return (currentLocation.substr(0, currentLocation.indexOf('lat')) == '') ? currentLocation : currentLocation.substr(0, currentLocation.indexOf('lat'))
-    };
-
     this.onMapIdle=(googleMapComponent) => {
-      const currentUrl=this.getCurrentUrl(history.location.pathname);
-
-      history.push(`${currentUrl}`,  {
+      history.push(history.location.pathname,  {
         latSouthWest: googleMapComponent.getBounds().getSouthWest().lat(),
         lngSouthWest: googleMapComponent.getBounds().getSouthWest().lng(),
         latNorthEast: googleMapComponent.getBounds().getNorthEast().lat(),
