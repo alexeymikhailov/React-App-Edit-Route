@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
   compose,
   withProps,
-  withStateHandlers
+  withStateHandlers,
+  lifecycle
 } from 'recompose';
 import {
   withGoogleMap,
@@ -12,6 +13,7 @@ import {
   Polyline,
   InfoWindow
 } from 'react-google-maps';
+const { SearchBox } = require("react-google-maps/lib/components/places/SearchBox");
 
 class Map extends Component {
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -79,6 +81,7 @@ class Map extends Component {
     const MapComponent=compose(
       withStateHandlers(() => ({
         isOpen: false,
+        center: '',
         openInfoMarkerId: '',
         defaultCoordinates: this.state.defaultCoordinates,
         routes: this.state.routes
@@ -110,13 +113,14 @@ class Map extends Component {
       }),
       withGoogleMap)(props => (
       <GoogleMap
-        ref={value => { this.googleMapComponent=value }}
+        ref={value => { this.googleMapComponent=value; }}
+        onIdle={() => { props.onMapIdle(this.googleMapComponent) }}
         defaultZoom={11}
-        defaultCenter={{ lat: props.defaultCoordinates.lat, lng: props.defaultCoordinates.lng }}
         center={{lat: (props.routes.length && props.routes[props.routes.length - 1].lat) || props.defaultCoordinates.lat, lng: (props.routes.length && props.routes[props.routes.length - 1].lng) || props.defaultCoordinates.lng}}>
         {
           !props.routes.length ? (
             <Marker
+              key={0}
               defaultDraggable={true}
               position={{lat: props.defaultCoordinates.lat, lng: props.defaultCoordinates.lng}}
               onClick={props.onToggleOpen}>
@@ -169,7 +173,7 @@ class Map extends Component {
     return (
       <div>
         <MapComponent
-          routes={this.state.routes}
+          onMapIdle={this.props.onMapIdle}
           loadingElement={<div style={{ height: `100%` }} />}
           containerElement={<div style={{ height: `400px` }} />}
           mapElement={<div style={{ height: `100%` }} />} />
