@@ -64,9 +64,6 @@ class Map extends Component {
             alert(error);
           }
   			});
-  		}, (error: string) => {
-        const errorGeo=`Geocode was not successful for the following reason: ${status}`;
-        alert(errorGeo);
   		});
   	} else {
   		const error='Your browser does not support geolocation.';
